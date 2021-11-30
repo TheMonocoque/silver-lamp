@@ -7,6 +7,7 @@ import uuid
 import logging
 import threading
 import asyncio
+import time
 from loguru import logger
 
 #------------------------------------------------------------------------------
@@ -23,10 +24,11 @@ async def trigger_event_async(tlog, prefix):
     while True:
         msg_id = str(uuid.uuid4())
         tlog.debug(f"{prefix}: That's it, beautiful logging.")
-        tlog.info(f"{prefix}: Here is an info tidbit -------  {msg_id}.")
+        tlog.trace(f"{prefix}: Here is an info tidbit -------  {msg_id}.")
         tlog.error(f"{prefix}: Whoa, an error is found here.")
         # Test without f-string
-        tlog.error("%s: legacy %s" % (prefix, msg_id)) # pylint: disable=consider-using-f-string
+        tlog.info("%s: legacy %s" % (prefix, msg_id)) # pylint: disable=consider-using-f-string
+        increase(prefix, 1)
         tlog.info(f"{prefix}: ===============================")
         await asyncio.sleep(random.random())
 
@@ -62,13 +64,27 @@ def example_asyncio():
         loop.close()
         tlog.info("Successfully shutdown service.")
 
+#------------------------------------------------------------------------------
+def increase(pref, byf):
+    """ Sample for locking """
+    global ZCOUNT # pylint: disable=global-statement
+    lock.acquire()
+    ZCOUNT += byf
+    time.sleep(0.5)
+    hash_value = hash(f'This is the measure: {ZCOUNT}')
+    print(f'{pref} - counter={ZCOUNT} and hash={hash_value}')
+    lock.release()
+
+
 #==============================================================================
 if __name__ == "__main__":
 
+    lock = threading.Lock()
+    ZCOUNT = 0
     #--------------------------------------------------------------------------
     # """ LOGURU """
     logger.remove() # remove default stderr for one stdout logger
-    logger.add(sys.stdout, colorize=True)
+    logger.add(sys.stdout, colorize=True, level="DEBUG") # DEBUG is default
     # logger.add("logs/file.log",
     #     rotation="100 KB", # rotation="1 MB",
     #     # format="{time:YYYY-MM-DD at HH::mm:ss} | {level} | {message}",
