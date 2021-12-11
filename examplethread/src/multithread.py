@@ -10,10 +10,14 @@ import asyncio
 import time
 from loguru import logger
 
+ZCOUNT = 0
+LOCK = threading.Lock()
+
+
 #------------------------------------------------------------------------------
-def trigger_event(tlog, prefix):
+def trigger_event(tlog, prefix, duration=600):
     """ Quick event for threading with logging """
-    for count in range(600):
+    for count in range(1, duration + 1):
         tlog.debug(f"{prefix}: That's it, beautiful logging.")
         tlog.info(f"{prefix}: Here is an info tidbit --- at {count} times.")
         tlog.error(f"{prefix}: Whoa, an error is found here.")
@@ -68,19 +72,15 @@ def example_asyncio():
 def increase(pref, byf):
     """ Sample for locking """
     global ZCOUNT # pylint: disable=global-statement
-    lock.acquire()
+    LOCK.acquire()
     ZCOUNT += byf
     time.sleep(0.5)
     hash_value = hash(f'This is the measure: {ZCOUNT}')
     print(f'{pref} - counter={ZCOUNT} and hash={hash_value}')
-    lock.release()
-
+    LOCK.release()
 
 #==============================================================================
 if __name__ == "__main__":
-
-    lock = threading.Lock()
-    ZCOUNT = 0
     #--------------------------------------------------------------------------
     # """ LOGURU """
     logger.remove() # remove default stderr for one stdout logger
