@@ -53,11 +53,13 @@ def continue_til_critical():
         roll = example(20)
         logger.trace("Crit check on roll {}: {}", counts, roll)
         if roll == 1:
-            logger.error("Critical failure!")
+            logger.error("Critical failure! Penalty 5 seconds.")
             failures += 1
-            time.sleep(1)
-        if roll == 20:
+            time.sleep(5)
+        elif roll == 20:
             break
+        else:
+            time.sleep(1)
     logger.info("Done with excercise after {} rolls, and {} failures", counts, failures)
 
 # =================================================================================================
@@ -72,4 +74,8 @@ if __name__ == "__main__":
     
     continue_til_found()
 
-    continue_til_critical()
+    start_time = time.monotonic()
+    continue_til_critical()  
+    end_time = time.monotonic()
+
+    logger.info("It took {} secs to roll a crit.", end_time - start_time)
