@@ -12,7 +12,7 @@ from loguru import logger
 
 ZCOUNT = 0
 LOCK = threading.Lock()
-
+LOOP_COUNT = 0
 
 #------------------------------------------------------------------------------
 def trigger_event(tlog, prefix, duration=600):
@@ -23,9 +23,12 @@ def trigger_event(tlog, prefix, duration=600):
         tlog.error(f"{prefix}: Whoa, an error is found here.")
 
 #------------------------------------------------------------------------------
-async def trigger_event_async(tlog, prefix):
+def forever_loop():
+    return True
+
+async def trigger_event_async(tlog, prefix, condition_loop=forever_loop):
     """ Quick event for threading with logging with async """
-    while True:
+    while condition_loop():
         msg_id = str(uuid.uuid4())
         tlog.debug(f"{prefix}: That's it, beautiful logging.")
         tlog.trace(f"{prefix}: Here is an info tidbit -------  {msg_id}.")
