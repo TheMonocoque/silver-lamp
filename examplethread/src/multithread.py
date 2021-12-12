@@ -23,7 +23,7 @@ def trigger_event(tlog, prefix, duration=600):
         tlog.error(f"{prefix}: Whoa, an error is found here.")
 
 #------------------------------------------------------------------------------
-def forever_loop():
+def forever_loop(): # pragma: no cover
     return True
 
 async def trigger_event_async(tlog, prefix, condition_loop=forever_loop):
@@ -40,7 +40,7 @@ async def trigger_event_async(tlog, prefix, condition_loop=forever_loop):
         await asyncio.sleep(random.random())
 
 #------------------------------------------------------------------------------
-def example_threading():
+def example_threading(): # pragma: no cover
     """ Use standard threading module """
     tlog = logging.getLogger(__name__)
     thr1 = threading.Thread(target=trigger_event, args=(tlog, 'thread1',) )
@@ -54,7 +54,7 @@ def example_threading():
     tlog.info("Complete.")
 
 #------------------------------------------------------------------------------
-def example_asyncio():
+def example_asyncio(): # pragma: no cover
     """ Sample of asyncio """
     # queue = asyncio.Queue()
     loop = asyncio.get_event_loop()
@@ -83,7 +83,7 @@ def increase(pref, byf):
     LOCK.release()
 
 #==============================================================================
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     #--------------------------------------------------------------------------
     # """ LOGURU """
     logger.remove() # remove default stderr for one stdout logger
