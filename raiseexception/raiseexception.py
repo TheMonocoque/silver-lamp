@@ -2,6 +2,7 @@
 
 import random
 import sys, time
+import traceback
 from loguru import logger
 
 
@@ -20,7 +21,7 @@ def example(blob=None):
 # -------------------------------------------------------------------------------------------------
 def try_10_times():
     """ try 10 times on example """
-    for x in range(10):
+    for _ in range(10):
         logger.trace("Example returns {}", example())
 
 # -------------------------------------------------------------------------------------------------
@@ -38,9 +39,7 @@ def continue_til_found():
             for sline in slines:
                 logger.trace("SLINE: {}", sline)
         except FileNotFoundError as excp:
-            logger.error("File not found, waiting for file to be created")
-            time.sleep(10)
-            continue
+            raise excp
         break
 
 # -------------------------------------------------------------------------------------------------
@@ -60,7 +59,7 @@ def continue_til_critical():
             break
         else:
             time.sleep(1)
-    logger.info("Done with excercise after {} rolls, and {} failures", counts, failures)
+    logger.info("Done with exercise after {} rolls, and {} failures", counts, failures)
 
 # =================================================================================================
 
@@ -69,13 +68,21 @@ if __name__ == "__main__":
     logger.add(sys.stdout, colorize=True, level="DEBUG")
 
     try_10_times()
-    
+
     various_ranges()
-    
-    continue_til_found()
+
+    while True:
+        try:
+            continue_til_found()
+            break
+        except Exception as excp:
+            logger.error("Failed and will wait 10 seconds to retry")
+            traceback.print_exc()
+            time.sleep(10)
+            continue
 
     start_time = time.monotonic()
-    continue_til_critical()  
+    continue_til_critical()
     end_time = time.monotonic()
 
     logger.info("It took {} secs to roll a crit.", end_time - start_time)
