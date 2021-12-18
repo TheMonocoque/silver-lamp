@@ -79,13 +79,15 @@ if __name__ == "__main__":
         except Exception as excp:
             # traceback.print_exc()
             logger.error("Woops - {}", excp)
-            logger.info("Failed and will wait 10 seconds to retry")
-            time.sleep(10)
             continue
         finally:
             retry_count += 1
             if retry_count == 3:
+                logger.error("Too many retries, continue to process other jobs.")
                 break
+            else:
+                logger.warning("Failed and will wait 10 seconds to retry")
+                time.sleep(10)
 
     start_time = time.monotonic()
     continue_til_critical()
