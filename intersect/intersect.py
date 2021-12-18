@@ -35,3 +35,37 @@ for keyname in common_keys:
 
 
 print("Remaining:", dict_inventory)
+
+# fibonnaci list comprehension
+mylist = [ 0, 1]
+n=20
+[mylist.append(mylist[-2]+mylist[-1]) for n in range(n)]
+print("Fibo:", mylist)
+
+# list comprehension vs lambda
+# https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3
+letters = list(map(lambda x: x, r'|human|'))
+print("LAMBDA__:", letters)
+print("ListComp:", [letter for letter in r'|human|'])
+
+""" conditional """
+number_list = [ x for x in range(20) if x % 2 == 0]
+print(number_list)
+
+""" with fish """
+fish_tuple = ('blowfish', 'clownfish', 'catfish', 'octopus')
+fish_list = [fish for fish in fish_tuple if fish != 'octopus']
+print(fish_list)
+
+"""
+# Convert
+my_list = []
+
+for x in [20, 40, 60]:
+    for y in [2, 4, 6]:
+        my_list.append(x * y)
+
+print(my_list)
+"""
+my_list = [x * y for x in [20, 40, 60] for y in [2, 4, 6]]
+print("CONVERT:", my_list)
