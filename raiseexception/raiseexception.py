@@ -71,15 +71,21 @@ if __name__ == "__main__":
 
     various_ranges()
 
+    retry_count = 0
     while True:
         try:
             continue_til_found()
             break
         except Exception as excp:
-            logger.error("Failed and will wait 10 seconds to retry")
-            traceback.print_exc()
+            # traceback.print_exc()
+            logger.error("Woops - {}", excp)
+            logger.info("Failed and will wait 10 seconds to retry")
             time.sleep(10)
             continue
+        finally:
+            retry_count += 1
+            if retry_count == 3:
+                break
 
     start_time = time.monotonic()
     continue_til_critical()
