@@ -4,6 +4,8 @@ Setup for example monkeypatch
 
 from json import JSONDecodeError
 import requests
+import numpy
+import datetime
 
 def power(a, b):
     return a ** b
@@ -12,22 +14,33 @@ def caller_to_power(a, b):
     print("Sending %g ^ %g" % (a , b))
     return ("Result: %g" % power(a, b))
 
+def fc_shipment(start=datetime.date(2022,1, 1), end=datetime.date.today()):
+    return numpy.busday_count(start, end)
+
 #//////////////////////////////////////////////////////////////////////////////////////////////////
 class FooBarBaz:
     def get_elapsed_time(self, url):
-        """Takes a URL, and returns the JSON."""
-        try:
-            r = requests.get(url)
-            print("JSON: %s" % r.json())
-        except JSONDecodeError as excp:
-            print("ERROR: Json decode error - %s" % str(excp))
-        finally:
-            print("Request completed")
+        r = requests.get(url)
         return r.elapsed.total_seconds()
+
 #//////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 if __name__ == "__main__": # pragma: no cover
     print(caller_to_power(2,8))
     foo = FooBarBaz()
-    print(foo.get_elapsed_time(url="https://google.com"))
+    try:
+        print("Time spent: ", foo.get_elapsed_time(url="https://google.com"))
+    except JSONDecodeError as excp:
+        raise("ERROR: Json decode error - %s" % str(excp))
+    finally:
+        print("Request completed")
+
+    start = datetime.date(2022,1, 28)
+    end   = datetime.date.today()
+    print("Number of business days since new year 2022: %g" % fc_shipment())
+    print("Number of days past due since %s: %g" % (start, fc_shipment(start, end)))
+    print("Adding 30 days after %s has %s business days" % (
+        start, 
+        fc_shipment(start, start + datetime.timedelta(days=30))
+        ))
