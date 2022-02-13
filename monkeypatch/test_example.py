@@ -33,3 +33,22 @@ def test_fedex_two_day():
 def test_fc_shipment_delayed(start, end, expected):
     result = foo.fc_shipment(start, end)
     assert result == expected
+
+# tmpfile and directories
+CONTENT = "Example from pytest.org"
+def test_create_file(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "hello.txt"
+    p.write_text(CONTENT)
+    assert p.read_text() == CONTENT
+#--------------------------------------------------------------------------------------------------
+# @pytest.fixture(scope="session")
+# def vmdk_obj(tmp_path_fact):
+#     vmdk = foo.create_expensive_disk()
+#     fn = tmp_path_fact.mktemp("data") / "core.vmdk"
+#     vmdk.save(fn)
+#     return fn
+# def test_validate_vmdk(vmdk_obj):
+#     disk = load_vmdk(vmdk_obj)
+#     # test disk
