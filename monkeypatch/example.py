@@ -7,6 +7,7 @@ import requests
 import numpy
 import datetime
 import time
+import constants
 
 #//////////////////////////////////////////////////////////////////////////////////////////////////
 def my_decorator(func):
@@ -39,7 +40,6 @@ class FooBarBaz:
 
 #//////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 if __name__ == "__main__": # pragma: no cover
     print(caller_to_power(2,8))
     foo = FooBarBaz()
@@ -61,6 +61,5 @@ if __name__ == "__main__": # pragma: no cover
         start, 
         fc_shipment(start, start + datetime.timedelta(days=30))
         ))
-    print("6 months from today: %s" % (datetime.date.today() + datetime.timedelta(days=180)))
-    print("6 months from specified date: %s" % (datetime.date(2023,6,17) + datetime.timedelta(days=180)))
-    
+    print("6 months from today: %s" % (datetime.date.today() + datetime.timedelta(days=constants.HALF_YEAR)))
+    print("6 months from specified date: %s" % (datetime.date(2023,6,17) + datetime.timedelta(days=constants.HALF_YEAR)))
