@@ -17,6 +17,7 @@ from blacklist import reddington
 
 def arg_run(value: str) -> (str, str):
     logger.info(f"Running {__name__}")
+    logger.info(f"listdir={os.listdir('/tmp')}")
     byte_message = value.encode()
     mykey = keyz('job12341234q234124', byte_message)
     asdf = mykey.produce()
@@ -35,6 +36,14 @@ def basic_test() -> str:
 
 def byebye(): # pragma: no cover
     logger.debug("That's all folks")
+
+def divide(a: int, b:int) -> float | ZeroDivisionError:
+    try:
+        return a / b
+    except ZeroDivisionError as excinfo:
+        raise ZeroDivisionError("No dividing by zero!")
+    finally:
+        logger.info("Complete")
 
 if __name__ == "__main__": # pragma: no cover
     logger.info("Start in main")

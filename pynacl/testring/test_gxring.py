@@ -1,4 +1,5 @@
 """ Testing Sandbox """
+import pytest
 import gxring
 
 #//////////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,16 @@ def test_basic(mocker):
     result = gxring.basic_test()
     assert result == "hello thereaaa"
 
-def test_arg_run(mocker, caplog):
+#@pytest.mark.timeout(10) # need to install pytest-timeout to use this
+@pytest.mark.fast # custom markers need to be added to project pytest.ini
+#@pytest.mark.xfail(reason='Well not really') # mark things that are expected to fail until fixed
+#@pytest.mark.skip(reason="No infra resource") # skip because it is not implemented yet
+@pytest.mark.parametrize('test_value, test_files',
+                         [('hello there', ['tmux3']),
+                          ('1234', ['tmux3']),
+                          ('x66', ['tmux32', 'tmux3'])
+                          ])
+def test_arg_run(mocker, caplog, test_value, test_files):
     """ test arg run mock """
     mocker.patch(
         'gxring.keyz.produce',
@@ -34,7 +44,14 @@ def test_arg_run(mocker, caplog):
         'nacl.encoding.Base64Encoder.encode',
         return_value=b'Gasldjfoiawerlkadsjf123412')
     caplog.set_level(gxring.logging.INFO)
-    result, key = gxring.arg_run('hello there')
+    mocker.patch('os.listdir').return_value = test_files
+    result, key = gxring.arg_run(test_value)
     assert result == 'Gasldjfoiawerlkadsjf123412'
     assert key == 'hello there'
     assert "Running gxring" in caplog.text
+
+def test_dvide_by_zero():
+    """ Quick Exception pytest example """
+    with pytest.raises(ZeroDivisionError) as excinfo:
+        gxring.divide(7,0)
+    assert str(excinfo.value) == "No dividing by zero!"
