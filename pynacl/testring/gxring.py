@@ -3,6 +3,7 @@ import sys
 import os
 import atexit
 import logging
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG)
@@ -15,7 +16,7 @@ from keyz import keyz
 from blacklist import reddington
 
 
-def arg_run(value: str) -> (str, str):
+def arg_run(value: str) -> Tuple[str, str]:
     logger.info(f"Running {__name__}")
     logger.info(f"listdir={os.listdir('/tmp')}")
     byte_message = value.encode()
@@ -26,7 +27,8 @@ def arg_run(value: str) -> (str, str):
         logger.info(f"random: {mykey.randomizer()}")
         return mykey.randomizer(), asdf
     except Exception as excp:
-        logger.error(f"[{type(excp).__name__}] - Out of luck, we ran out of randoms.", excp)
+        # logger.error(f"[{type(excp).__name__}] - Out of luck, we ran out of randoms.", excp)
+        raise RuntimeError("Out of luck with retries")
 
 def basic_test() -> str:
     mykey = keyz('job12341234q234123', b'asdfasdfasdfqwerqwerqwerqwer')

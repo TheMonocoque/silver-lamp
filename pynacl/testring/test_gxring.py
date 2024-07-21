@@ -3,6 +3,8 @@ import pytest
 import gxring
 
 #//////////////////////////////////////////////////////////////////////////////
+# Setups and Teardowns
+#------------------------------------------------------------------------------
 def setup():
     pass
 
@@ -15,7 +17,12 @@ def setup_method():
 def teardown_method():
     pass
 #//////////////////////////////////////////////////////////////////////////////
+# Fixtures
+#------------------------------------------------------------------------------
 
+#//////////////////////////////////////////////////////////////////////////////
+# Tests
+#------------------------------------------------------------------------------
 def test_basic(mocker):
     """ Test out mocking an imported library function """
     mocker.patch(
@@ -55,3 +62,18 @@ def test_dvide_by_zero():
     with pytest.raises(ZeroDivisionError) as excinfo:
         gxring.divide(7,0)
     assert str(excinfo.value) == "No dividing by zero!"
+
+def test_arg_run_max_limit_exception(mocker,caplog):
+    mocker.patch(
+        'gxring.keyz.produce',
+        return_value="hello there"
+    )
+    mocker.patch(
+        'nacl.encoding.Base64Encoder.encode',
+        return_value=b'Zasldjfoiawerlkadsjf123412')
+    caplog.set_level(gxring.logging.INFO)
+    mocker.patch('os.listdir').return_value = ['one', 'two']
+    with pytest.raises(RuntimeError) as excpinfo:
+        result, key = gxring.arg_run('test_value')
+    assert "Running gxring" in caplog.text
+    assert str(excpinfo.value) == "Out of luck with retries"
