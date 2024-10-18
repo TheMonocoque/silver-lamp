@@ -10,19 +10,13 @@ import src.multithread as gb1
 
 class TestThread:
     """ Test suite """  
-    def setup(self):
-        """ setup some modules """
+    def setup_method(self):
+        """ per method setup """
         try:
             for fhxp in glob.glob("logs/testfile*.log"):
                 os.unlink(fhxp)
         except PermissionError as excp:
             print("ERROR: removing file - {}", str(excp))
-
-    def teardown(self):
-        """ teardown once complete """
-
-    def setup_method(self):
-        """ per method setup """
         gb1.ZCOUNT = 0
 
     def teardown_method(self):
@@ -38,7 +32,7 @@ class TestThread:
 
     # ---------------------------------------------------------------------------------------------
     loop_count = 0
-    def test_loop(self):
+    def gtest_loop(self):
         self.loop_count += 1
         if self.loop_count > 2:
             return False
@@ -73,7 +67,7 @@ class TestThread:
         logger.remove() # remove default stderr for one stdout logger
         logger.add(logname, colorize=True, level="INFO") # DEBUG is default
         zlog = logger
-        await gb1.trigger_event_async(zlog, "zzz", self.test_loop)
+        await gb1.trigger_event_async(zlog, "zzz", self.gtest_loop)
         with open(file=logname, mode="r") as fhxp:
             sl2list = fhxp.readlines()
         fhxp.close()
