@@ -9,7 +9,7 @@ class Configuration:
         self.org_name = org_name
 
 class Configuration2:
-    def __init__(self, *, site_url: str, org_name: str):
+    def __init__(self, site_url: str, org_name: str):
         self.site = site_url
         self.org_name = org_name
 
